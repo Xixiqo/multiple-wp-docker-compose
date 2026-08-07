@@ -1,0 +1,170 @@
+services:
+  nginx:
+    # Satu-satunya service yang diekspos ke host.
+    image: nginx:alpine
+    container_name: wp-nginx
+    restart: unless-stopped
+    depends_on:
+      - wordpress1
+      - wordpress2
+      - wordpress3
+    ports:
+      - "8081:8081"
+      - "8082:8082"
+      - "8083:8083"
+    volumes:
+      - wordpress_data1:/var/www/html/site1:ro
+      - wordpress_data2:/var/www/html/site2:ro
+      - wordpress_data3:/var/www/html/site3:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - nginx_fastcgi_cache:/var/cache/nginx/wordpress
+    networks:
+      - net-public
+      - net-internal
+    cpus: "0.5"
+    mem_limit: 256m
+
+  wordpress1:
+    # WordPress berjalan sebagai PHP-FPM agar Nginx menangani request web.
+    image: wordpress:php8.4-fpm-alpine
+    container_name: wp-web1
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST1}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER1}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD1}
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME1}
+      WORDPRESS_TABLE_PREFIX: wp_
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_REDIS_HOST', 'redis');
+        define('WP_REDIS_PORT', 6379);
+    volumes:
+      - wordpress_data1:/var/www/html
+    networks:
+      - net-internal
+      - net-public
+    cpus: "0.5"
+    mem_limit: 512m
+
+  wordpress2:
+    # WordPress berjalan sebagai PHP-FPM agar Nginx menangani request web.
+    image: wordpress:php8.4-fpm-alpine
+    container_name: wp-web2
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST2}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER2}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD2}
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME2}
+      WORDPRESS_TABLE_PREFIX: wp_
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_REDIS_HOST', 'redis');
+        define('WP_REDIS_PORT', 6379);
+    volumes:
+      - wordpress_data2:/var/www/html
+    networks:
+      - net-internal
+      - net-public
+    cpus: "0.5"
+    mem_limit: 512m
+
+  wordpress3:
+    # WordPress berjalan sebagai PHP-FPM agar Nginx menangani request web.
+    image: wordpress:php8.4-fpm-alpine
+    container_name: wp-web3
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST3}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER3}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD3}
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME3}
+      WORDPRESS_TABLE_PREFIX: wp_
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_REDIS_HOST', 'redis');
+        define('WP_REDIS_PORT', 6379);
+    volumes:
+      - wordpress_data3:/var/www/html
+    networks:
+      - net-internal
+      - net-public
+    cpus: "0.5"
+    mem_limit: 512m
+
+  mariadb:
+    # Database dipisah dan hanya bisa diakses lewat network internal.
+    image: mariadb:11
+    container_name: wp-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./mariadb/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - net-internal
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mariadb-admin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD --silent",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    cpus: "0.5"
+    mem_limit: 512m
+
+  redis:
+    image: redis:alpine
+    container_name: wp-redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    command:
+      [
+        "redis-server",
+        "--appendonly",
+        "no",
+        "--save",
+        "",
+        "--maxmemory",
+        "64mb",
+        "--maxmemory-policy",
+        "allkeys-lru",
+      ]
+    networks:
+      - net-internal
+    cpus: "0.5"
+    mem_limit: 256m
+
+volumes:
+  mariadb_data:
+  wordpress_data1:
+  wordpress_data2:
+  wordpress_data3:
+  nginx_fastcgi_cache:
+  redis_data:
+
+networks:
+  net-internal:
+    internal: true
+  net-public:
