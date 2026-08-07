@@ -43,6 +43,8 @@ services:
       WORDPRESS_CONFIG_EXTRA: |
         define('WP_REDIS_HOST', 'redis');
         define('WP_REDIS_PORT', 6379);
+        define('WP_HOME', 'http://192.168.37.135:8081');
+        define('WP_SITEURL', 'http://192.168.37.135:8081');
     volumes:
       - wordpress_data1:/var/www/html
     networks:
@@ -70,6 +72,8 @@ services:
       WORDPRESS_CONFIG_EXTRA: |
         define('WP_REDIS_HOST', 'redis');
         define('WP_REDIS_PORT', 6379);
+        define('WP_HOME', 'http://192.168.37.135:8082');
+        define('WP_SITEURL', 'http://192.168.37.135:8082');
     volumes:
       - wordpress_data2:/var/www/html
     networks:
@@ -97,6 +101,8 @@ services:
       WORDPRESS_CONFIG_EXTRA: |
         define('WP_REDIS_HOST', 'redis');
         define('WP_REDIS_PORT', 6379);
+        define('WP_HOME', 'http://192.168.37.135:8083');
+        define('WP_SITEURL', 'http://192.168.37.135:8083');
     volumes:
       - wordpress_data3:/var/www/html
     networks:
