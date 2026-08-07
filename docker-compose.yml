@@ -21,8 +21,8 @@ services:
     networks:
       - net-public
       - net-internal
-    cpus: "0.5"
-    mem_limit: 256m
+    cpus: "0.25"
+    mem_limit: 128m
 
   wordpress1:
     # WordPress berjalan sebagai PHP-FPM agar Nginx menangani request web.
@@ -48,7 +48,7 @@ services:
     networks:
       - net-internal
       - net-public
-    cpus: "0.5"
+    cpus: "0.35"
     mem_limit: 512m
 
   wordpress2:
@@ -75,7 +75,7 @@ services:
     networks:
       - net-internal
       - net-public
-    cpus: "0.5"
+    cpus: "0.35"
     mem_limit: 512m
 
   wordpress3:
@@ -102,7 +102,7 @@ services:
     networks:
       - net-internal
       - net-public
-    cpus: "0.5"
+    cpus: "0.35"
     mem_limit: 512m
 
   mariadb:
@@ -153,8 +153,8 @@ services:
       ]
     networks:
       - net-internal
-    cpus: "0.5"
-    mem_limit: 256m
+    cpus: "0.35"
+    mem_limit: 128m
 
 volumes:
   mariadb_data:
