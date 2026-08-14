@@ -159,7 +159,7 @@ services:
       ]
     networks:
       - net-internal
-    cpus: "0.35"
+    cpus: "0.20"
     mem_limit: 128m
 
 volumes:
