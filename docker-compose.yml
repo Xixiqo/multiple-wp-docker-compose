@@ -173,4 +173,14 @@ volumes:
 networks:
   net-internal:
     internal: true
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+        - subnet: fd00:dead:beef::/64
   net-public:
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: 172.21.0.0/24
+        - subnet: fd00:beef:dead::/64
