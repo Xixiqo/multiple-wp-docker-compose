@@ -45,6 +45,7 @@ services:
         define('WP_REDIS_PORT', 6379);
         define('WP_HOME', 'http://wp1.sunuy.my.id');
         define('WP_SITEURL', 'http://wp1.sunuy.my.id');
+        define('WP_REDIS_PREFIX', 'wp1:');
     volumes:
       - wordpress_data1:/var/www/html
     networks:
@@ -74,6 +75,7 @@ services:
         define('WP_REDIS_PORT', 6379);
         define('WP_HOME', 'http://wp2.sunuy.my.id');
         define('WP_SITEURL', 'http://wp2.sunuy.my.id');
+        define('WP_REDIS_PREFIX', 'wp2:');
     volumes:
       - wordpress_data2:/var/www/html
     networks:
@@ -103,6 +105,7 @@ services:
         define('WP_REDIS_PORT', 6379);
         define('WP_HOME', 'http://wp3.sunuy.my.id');
         define('WP_SITEURL', 'http://wp3.sunuy.my.id');
+        define('WP_REDIS_PREFIX', 'wp3:');
     volumes:
       - wordpress_data3:/var/www/html
     networks:
