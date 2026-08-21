@@ -1,4 +1,17 @@
 services:
+  npm:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: npm
+    restart: unless-stopped
+    ports:
+      - "80:80"     # Port HTTP standar
+      - "443:443"   # Port HTTPS standar
+      - "81:81"     # Port untuk mengakses Web GUI Admin NPM
+    volumes:
+      - npm_data:/data
+      - npm_letsencrypt:/etc/letsencrypt
+    networks:
+      - net-public
   nginx:
     # Satu-satunya service yang diekspos ke host.
     image: nginx:alpine
@@ -8,10 +21,6 @@ services:
       - wordpress1
       - wordpress2
       - wordpress3
-    ports:
-      - "8081:8081"
-      - "8082:8082"
-      - "8083:8083"
     volumes:
       - wordpress_data1:/var/www/html/site1:ro
       - wordpress_data2:/var/www/html/site2:ro
