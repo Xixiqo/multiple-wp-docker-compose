@@ -11,33 +11,33 @@ services:
       - npm_data:/data
       - npm_letsencrypt:/etc/letsencrypt
     networks:
-      - net-public
+      - net-public-npm
   nginx:
     # Satu-satunya service yang diekspos ke host.
     image: nginx:alpine
-    container_name: wp-nginx
+    container_name: wp-nginx-npm
     restart: unless-stopped
     depends_on:
       - wordpress1
       - wordpress2
       - wordpress3
     volumes:
-      - wordpress_data1:/var/www/html/site1:ro
-      - wordpress_data2:/var/www/html/site2:ro
-      - wordpress_data3:/var/www/html/site3:ro
+      - wordpress_data1-npm:/var/www/html/site1-npm:ro
+      - wordpress_data2-npm:/var/www/html/site2-npm:ro
+      - wordpress_data3-npm:/var/www/html/site3-npm:ro
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     tmpfs:
       - /var/cache/nginx/wordpress:size=100M
     networks:
-      - net-public
-      - net-internal
+      - net-public-npm
+      - net-internal-npm
     cpus: "0.25"
     mem_limit: 128m
 
   wordpress1:
     # WordPress berjalan sebagai PHP-FPM agar Nginx menangani request web.
     image: wordpress:php8.4-fpm-alpine
-    container_name: wp-web1
+    container_name: wp-web1-npm
     restart: unless-stopped
     depends_on:
       mariadb:
@@ -57,17 +57,17 @@ services:
         define('WP_SITEURL', 'http://wp1.sunuy.my.id');
         define('WP_REDIS_PREFIX', 'wp1:');
     volumes:
-      - wordpress_data1:/var/www/html
+      - wordpress_data1-npm:/var/www/html
     networks:
-      - net-internal
-      - net-public
+      - net-internal-npm
+      - net-public-npm
     cpus: "0.35"
     mem_limit: 512m
 
   wordpress2:
     # WordPress berjalan sebagai PHP-FPM agar Nginx menangani request web.
     image: wordpress:php8.4-fpm-alpine
-    container_name: wp-web2
+    container_name: wp-web2-npm
     restart: unless-stopped
     depends_on:
       mariadb:
@@ -87,17 +87,17 @@ services:
         define('WP_SITEURL', 'http://wp2.sunuy.my.id');
         define('WP_REDIS_PREFIX', 'wp2:');
     volumes:
-      - wordpress_data2:/var/www/html
+      - wordpress_data2-npm:/var/www/html
     networks:
-      - net-internal
-      - net-public
+      - net-internal-npm
+      - net-public-npm
     cpus: "0.35"
     mem_limit: 512m
 
   wordpress3:
     # WordPress berjalan sebagai PHP-FPM agar Nginx menangani request web.
     image: wordpress:php8.4-fpm-alpine
-    container_name: wp-web3
+    container_name: wp-web3-npm
     restart: unless-stopped
     depends_on:
       mariadb:
@@ -117,17 +117,17 @@ services:
         define('WP_SITEURL', 'http://wp3.sunuy.my.id');
         define('WP_REDIS_PREFIX', 'wp3:');
     volumes:
-      - wordpress_data3:/var/www/html
+      - wordpress_data3-npm:/var/www/html
     networks:
-      - net-internal
-      - net-public
+      - net-internal-npm
+      - net-public-npm
     cpus: "0.35"
     mem_limit: 512m
 
   mariadb:
     # Database dipisah dan hanya bisa diakses lewat network internal.
     image: mariadb:11
-    container_name: wp-db
+    container_name: wp-db-npm
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -135,10 +135,10 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
-      - mariadb_data:/var/lib/mysql
+      - mariadb_data-npm:/var/lib/mysql
       - ./mariadb/init:/docker-entrypoint-initdb.d:ro
     networks:
-      - net-internal
+      - net-internal-npm
     healthcheck:
       test:
         [
@@ -154,7 +154,7 @@ services:
 
   redis:
     image: redis:alpine
-    container_name: wp-redis
+    container_name: wp-redis-npm
     restart: unless-stopped
     command:
       [
@@ -169,27 +169,29 @@ services:
         "allkeys-lru",
       ]
     networks:
-      - net-internal
+      - net-internal-npm
     cpus: "0.20"
     mem_limit: 128m
 
 volumes:
-  mariadb_data:
-  wordpress_data1:
-  wordpress_data2:
-  wordpress_data3:
+  mariadb_data-npm:
+  wordpress_data1-npm:
+  wordpress_data2-npm:
+  wordpress_data3-npm:
+  npm_data:
+  npm_letsencrypt:
 
 networks:
-  net-internal:
+  net-internal-npm:
     internal: true
     enable_ipv6: true
     ipam:
       config:
-        - subnet: 172.20.0.0/24
-        - subnet: fd00:dead:beef::/64
-  net-public:
+        - subnet: 172.23.0.0/24
+        - subnet: fd00:deab:beef::/64
+  net-public-npm:
     enable_ipv6: true
     ipam:
       config:
-        - subnet: 172.21.0.0/24
-        - subnet: fd00:beef:dead::/64
+        - subnet: 172.24.0.0/24
+        - subnet: fd00:beed:dead::/64
