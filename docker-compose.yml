@@ -57,8 +57,8 @@ services:
         define('WP_SITEURL', 'http://wp1.sunuy.my.id');
         define('WP_REDIS_PREFIX', 'wp1:');
         
-        if ( isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' ) {
-            $_SERVER['HTTPS'] = 'on';
+        if ( isset($$_SERVER['HTTP_X_FORWARDED_PROTO']) && $$_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' ) {
+            $$_SERVER['HTTPS'] = 'on';
         }
 
     volumes:
@@ -92,8 +92,8 @@ services:
         define('WP_SITEURL', 'http://wp2.sunuy.my.id');
         define('WP_REDIS_PREFIX', 'wp2:');
 
-        if ( isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' ) {
-            $_SERVER['HTTPS'] = 'on';
+        if ( isset($$_SERVER['HTTP_X_FORWARDED_PROTO']) && $$_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' ) {
+            $$_SERVER['HTTPS'] = 'on';
         }
 
     volumes:
@@ -127,8 +127,8 @@ services:
         define('WP_SITEURL', 'http://wp3.sunuy.my.id');
         define('WP_REDIS_PREFIX', 'wp3:');
 
-        if ( isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' ) {
-            $_SERVER['HTTPS'] = 'on';
+        if ( isset($$_SERVER['HTTP_X_FORWARDED_PROTO']) && $$_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' ) {
+            $$_SERVER['HTTPS'] = 'on';
         }
 
     volumes:
