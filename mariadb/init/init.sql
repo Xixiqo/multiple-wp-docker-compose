@@ -1,11 +1,11 @@
-CrEATE DATABASE IF NOT EXISTS wordpress;
-CREATE DATABASE IF NOT EXISTS wordpress2;
-CREATE DATABASE IF NOT EXISTS wordpress3;
+CrEATE DATABASE IF NOT EXISTS wordpress_npm;
+CREATE DATABASE IF NOT EXISTS wordpress2_npm;
+CREATE DATABASE IF NOT EXISTS wordpress3_npm;
 
-CREATE USER IF NOT EXISTS 'wpuser'@'%' IDENTIFIED BY 'wppassword';
+CREATE USER IF NOT EXISTS 'wpuser_npm'@'%' IDENTIFIED BY 'wppassword';
 
-GRANT ALL PRIVILEGES ON wordpress.* TO 'wpuser'@'%';
-GRANT ALL PRIVILEGES ON wordpress2.* TO 'wpuser'@'%';
-GRANT ALL PRIVILEGES ON wordpress3.* TO 'wpuser'@'%';
+GRANT ALL PRIVILEGES ON wordpress_npm.* TO 'wpuser_npm'@'%';
+GRANT ALL PRIVILEGES ON wordpress2_npm.* TO 'wpuser_npm'@'%';
+GRANT ALL PRIVILEGES ON wordpress3_npm.* TO 'wpuser_npm'@'%';
 
 FLUSH PRIVILEGES;
